@@ -1,7 +1,8 @@
 body {
-  background: #2822828;/* match border color */
+  background: #282828;/* match border color */
   text-align: center;
 }
+
 section {
     min-height: 200vh; /* minus the height of the footer */
 }
