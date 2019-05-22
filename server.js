@@ -94,27 +94,26 @@ function HostChecker(ipClient,res,req)
         console.log('HostChecker result is:', bodyData['host']);
       }
     console.log('2. Result is:', result);
-    console.log("------------------ContryLanguage--------------------");
-    ContryLanguage(ipClient,res,req);
+    console.log("------------------CountryLanguage--------------------");
+    CountryLanguage(ipClient,res,req);
 })};
 
 
 
-function ContryLanguage(ipClient,res,req){
+function CountryLanguage(ipClient,res,req){
   request(`https://api.ipgeolocation.io/timezone?apiKey=3f643672d11b4aff9c827233f1e5cb05&tz=` + CountryLanguage.getCountry(geoip.lookup(ipClient)['country']).name ,function(error,response,body){
-    if (error) {console.log(error)};
-    time = JSON.parse(body)['time_24'];
-    
+  time = JSON.parse(body)['time_24'];
   var answer = 0;
+
   try {
-    var contry = geoip.lookup(ipClient)['country'];
-    var fullCountry = CountryLanguage.getCountry(contry).name;
+    var country = geoip.lookup(ipClient)['country'];
+    var fullCountry = CountryLanguage.getCountry(country).name;
     var accept_language = req.header('accept-language');
-    console.log('Country:',contry);
+    console.log('Country:',country);
     console.log('Accept_Language:', accept_language);
   } catch (err) {console.log(err);}
 
-  CountryLanguage.getCountryLanguages(contry, function (err, languages) {
+  CountryLanguage.getCountryLanguages(country, function (err, languages) {
     if (err) {
       console.log(err);
     }
@@ -125,17 +124,24 @@ function ContryLanguage(ipClient,res,req){
         })
       }
     })
+  console.log('CountryLanguage result is:', answer);
 
-  console.log('ContryLanguage result is:', answer);
-  if(answer < 1){
-    test3 = 'red';
-    check3 = 'Failed';
-    result += 0.25;
-    percent3 = ' - 25%'
+  if(error || !country || !accept_language){
+    console.log('CountryLanguage error: Country: ' + country+'Accept_Language: ' + accept_language);
+    test3 = 'yellow';
+    check3 = 'Checking Error';
   }
   else{
-    test3 = 'green';
-    check3 = 'Succeed';
+    if(answer < 1){
+      test3 = 'red';
+      check3 = 'Failed';
+      result += 0.25;
+      percent3 = ' - 25%'
+    }
+    else{
+      test3 = 'green';
+      check3 = 'Succeed';
+    }
   }
   console.log('3. Result is:', result);
 

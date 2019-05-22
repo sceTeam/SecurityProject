@@ -51,6 +51,7 @@ function compareLocalTime(result) {
   var element = document.getElementById("test4");
 
   if(!ipTime || !systemTime){
+    element.classList.add("toast--yellow");
     document.getElementById("check4").innerHTML = 'Checking Error';
   }
   else{
