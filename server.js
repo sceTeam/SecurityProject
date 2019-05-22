@@ -127,7 +127,7 @@ function CountryLanguage(ipClient,res,req){
   console.log('CountryLanguage result is:', answer);
 
   if(error || !country || !accept_language){
-    console.log('CountryLanguage error: Country: ' + country+'Accept_Language: ' + accept_language);
+    console.log('CountryLanguage error: Country: ' + country + 'Accept_Language: ' + accept_language);
     test3 = 'yellow';
     check3 = 'Checking Error';
   }
