@@ -94,13 +94,13 @@ function HostChecker(ipClient,res,req)
         console.log('HostChecker result is:', bodyData['host']);
       }
     console.log('2. Result is:', result);
-    console.log("------------------CountryLanguage--------------------");
-    CountryLanguage(ipClient,res,req);
+    console.log("------------------Country_Language--------------------");
+    Country_Language(ipClient,res,req);
 })};
 
 
 
-function CountryLanguage(ipClient,res,req){
+function Country_Language(ipClient,res,req){
   request(`https://api.ipgeolocation.io/timezone?apiKey=3f643672d11b4aff9c827233f1e5cb05&tz=` + CountryLanguage.getCountry(geoip.lookup(ipClient)['country']).name ,function(error,response,body){
   time = JSON.parse(body)['time_24'];
   var answer = 0;
@@ -124,10 +124,10 @@ function CountryLanguage(ipClient,res,req){
         })
       }
     })
-  console.log('CountryLanguage result is:', answer);
+  console.log('Country_Language result is:', answer);
 
   if(error || !country || !accept_language){
-    console.log('CountryLanguage error: Country: ' + country + 'Accept_Language: ' + accept_language);
+    console.log('Country_Language error: Country: ' + country + 'Accept_Language: ' + accept_language);
     test3 = 'yellow';
     check3 = 'Checking Error';
   }
