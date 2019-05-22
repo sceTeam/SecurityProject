@@ -24,8 +24,8 @@ app.get('/', function(req, res) {
     console.log("------------------------------------------------------");
     //ipClient = '217.182.175.75'; //Proxy
     //ipClient = '104.248.140.7'; //VPN
-    ipClient = '109.64.87.92'; //Real IP
-    //ipClient = req.header('x-forwarded-for');
+    //ipClient = '109.64.87.92'; //Real IP
+    ipClient = req.header('x-forwarded-for');
     console.log("Client Connected..");
     console.log(`Client IP: ${ipClient}`);
     console.log("------------------BlackBoxProxyBlock----------------------");
@@ -101,13 +101,14 @@ function HostChecker(ipClient,res,req)
 
 
 function ContryLanguage(ipClient,res,req){
-  request(`https://api.ipgeolocation.io/timezone?apiKey=3f643672d11b4aff9c827233f1e5cb05&tz=Asia/Jerusalem`,function(error,response,body){
+  request(`https://api.ipgeolocation.io/timezone?apiKey=3f643672d11b4aff9c827233f1e5cb05&tz=` + CountryLanguage.getCountry(geoip.lookup(ipClient)['country']).name ,function(error,response,body){
     if (error) {console.log(error)};
     time = JSON.parse(body)['time_24'];
     
   var answer = 0;
   try {
     var contry = geoip.lookup(ipClient)['country'];
+    var fullCountry = CountryLanguage.getCountry(contry).name;
     var accept_language = req.header('accept-language');
     console.log('Country:',contry);
     console.log('Accept_Language:', accept_language);
@@ -138,6 +139,6 @@ function ContryLanguage(ipClient,res,req){
   }
   console.log('3. Result is:', result);
 
-  res.render('index',{result:result,time:time,ipClient:ipClient,test1:test1,test2:test2,test3:test3,check1:check1,check2:check2,check3:check3,percent1,percent2,percent3});
+  res.render('index',{result:result,time:time,country:fullCountry,ipClient:ipClient,test1:test1,test2:test2,test3:test3,check1:check1,check2:check2,check3:check3,percent1,percent2,percent3});
   });
 };

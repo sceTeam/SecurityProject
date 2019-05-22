@@ -48,16 +48,19 @@ function compareLocalTime(result) {
   ipHour = ipTimeSplit[0];
   ipMinutes = ipTimeSplit[1];
 
+  var element = document.getElementById("test4");
+
   if(!ipTime || !systemTime){
     document.getElementById("check4").innerHTML = 'Checking Error';
   }
   else{
     if(localHour==ipHour && (localMinutes >= ipMinutes-2 && localMinutes <= ipMinutes+5)){
-      //document.getElementById("test4").innerHTML = 'green';
+
+      element.classList.add("toast--green");
       document.getElementById("check4").innerHTML = 'Succeed';
     }
     else{
-      //document.getElementById("test4").innerHTML = 'red';
+      element.classList.add("toast--red");
       document.getElementById("check4").innerHTML = 'Failed';
       document.getElementById("percent4").innerHTML = ' - 30%';
       result += 0.3;
@@ -71,7 +74,6 @@ function compareLocalTime(result) {
   }
 
   updateGraph(result);
-
 };
 
 jQuery(document).ready(function(){

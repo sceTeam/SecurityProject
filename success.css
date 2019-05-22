@@ -87,6 +87,11 @@ html, body{
   padding-right:60px;
 }
 
+.info2{
+  padding-left:70px;
+  padding-right:30px;
+}
+
 .toast__close {
     position: absolute;
     right: 22px;
