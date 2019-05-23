@@ -13,6 +13,7 @@ text.style.color = color;
 function updateGraph(perc) {
 
 if(document.getElementById("check4").innerHTML == 'Checking Error'){
+  color = '#e6c300';
   text.style.color = '#e6c300';
 }
 
