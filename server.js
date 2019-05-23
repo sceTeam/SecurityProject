@@ -25,7 +25,7 @@ app.get('/', function(req, res) {
     //ipClient = '217.182.175.75'; //Proxy
     //ipClient = '104.248.140.7'; //VPN
     //ipClient = '109.64.87.92'; //Real IP
-    //ipClient = req.header('x-forwarded-for');
+    ipClient = req.header('x-forwarded-for');
     accept_language = req.header('accept-language');
     console.log("Client Connected..");
     console.log(`Client IP: ${ipClient}`);
