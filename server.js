@@ -29,7 +29,7 @@ app.get('/', function(req, res) {
     accept_language = req.header('accept-language');
     console.log("Client Connected..");
     console.log(`Client IP: ${ipClient}`);
-    console.log("------------------BlackBoxProxyBlock----------------------");
+    console.log("----------------BlackBoxProxyBlock--------------------");
     BlackBoxProxyBlock(res);
 })
 
@@ -39,7 +39,7 @@ if (port == null || port == "") {
   }
 
 app.listen(port);
-
+console.log("-------------------");
 app.use(express.static(__dirname + '/'));
 console.log("Server is running..");
 
@@ -65,7 +65,7 @@ function BlackBoxProxyBlock(res)
         console.log('BlackBoxProxyBlock result is:', body);
       }
     console.log('1. Result is:', result);
-    console.log("------------------HostChecker--------------------");
+    console.log("--------------------HostChecker-----------------------");
     HostChecker(res);
   }
 )};
@@ -82,7 +82,7 @@ function HostChecker(res)
       check2 = 'Checking Error';
     }
     else{
-      if(bodyData['host'] == ipClient){
+      if(bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A')){
           test2 = 'red';
           check2 = 'Failed';
           result += 0.15;
@@ -92,7 +92,7 @@ function HostChecker(res)
           test2 = 'green';
           check2 = 'Succeed';
         }
-        console.log('HostChecker result is:', bodyData['host']);
+        console.log('HostChecker result is:', bodyData['host'] + ' Region: ' + bodyData['region'] + ' City: ' + bodyData['city']);
       }
     console.log('2. Result is:', result);
     getFlag(res);
@@ -115,8 +115,8 @@ function Country_Language(res){
   try {
     var country = geoip.lookup(ipClient)['country'];
     var fullCountry = CountryLanguage.getCountry(country).name;
-    console.log('Country:',country);
-    console.log('Accept_Language:', accept_language);
+    console.log('iP_Country:',country);
+    console.log('Accepted_Language:', accept_language);
   } catch (err) {'Country_Language Function Error!'; test3 = 'yellow'; check3 = 'Checking Error';}
   request(`https://api.ipgeolocation.io/timezone?apiKey=3f643672d11b4aff9c827233f1e5cb05&tz=` + fullCountry ,function(error,response,body){
   if(error || fullCountry == undefined){
@@ -132,6 +132,7 @@ function Country_Language(res){
       console.log(err);
     }
     else {
+      console.log('Country_Languages: ',CountryLanguage.getCountryLanguages(country));
       languages.forEach(function (languageCodes) {
         console.log('#.', languageCodes.iso639_1);
         answer += accept_language.includes(languageCodes.iso639_1);
@@ -141,7 +142,7 @@ function Country_Language(res){
   console.log('Country_Language result is:', answer);
 
   if(!country || !accept_language){
-    console.log('Country_Language error: Country: ' + country + '  Accept_Language: ' + accept_language);
+    console.log('Country_Language error: Country: ' + country + '  Acceptקג_Language: ' + accept_language);
     test3 = 'yellow';
     check3 = 'Checking Error';
   }
@@ -158,7 +159,7 @@ function Country_Language(res){
     }
   }
   console.log('3. Result is:', result);
-
+  console.log("------------------------------------------------------");
   res.render('index',{result:result,time:time,country:fullCountry,country_flag:country_flag,time_zone:time_zone,ipClient:ipClient,test1:test1,test2:test2,test3:test3,check1:check1,check2:check2,check3:check3,percent1,percent2,percent3});
 });
 };

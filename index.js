@@ -12,7 +12,7 @@ text.style.color = color;
 
 function updateGraph(perc) {
 
-if(document.getElementById("check4").innerHTML == 'Checking Error'){
+if(document.getElementById("check4").innerHTML == 'Checking Error' && document.getElementById("check1").innerHTML == 'Checking Error'){
   color = '#e6c300';
   text.style.color = '#e6c300';
 }
@@ -40,18 +40,18 @@ if(perc >= 0.6){
 
 function compareLocalTime(result) {
   document.getElementById("percent4").innerHTML = '';
-  var ipTime, systemTime, localHour, localMinutes, ipTimeSplit, ipHour, ipMinutes;
+  var ipTime, systemTime, systemHour, systemMinutes, ipTimeSplit, ipHour, ipMinutes;
 
   ipTime = String(document.getElementById('localTime').innerHTML);
 
   systemTime = new Date();
   document.getElementById('date').innerHTML = systemTime;
 
-  localHour = systemTime.getHours().toString();
-  localHour = ("0" + localHour).slice(-2);
+  systemHour = systemTime.getHours().toString();
+  systemHour = ("0" + systemHour).slice(-2);
 
-  localMinutes = systemTime.getMinutes().toString();
-  localMinutes = ("0" + localMinutes).slice(-2);
+  systemMinutes = systemTime.getMinutes().toString();
+  systemMinutes = ("0" + systemMinutes).slice(-2);
   
   ipTimeSplit = ipTime.split(':');
 
@@ -62,24 +62,30 @@ function compareLocalTime(result) {
 
   var usingElement = document.getElementById("using");
 
-  if(!ipTime || !systemTime || !localHour || !localMinutes || !ipHour || !ipMinutes){
+  if(!ipTime || !systemTime || !systemHour || !systemMinutes || !ipHour || !ipMinutes){
     test4Element.classList.add("toast--yellow");
     document.getElementById("check4").innerHTML = 'Checking Error';
   }
   else{
-    if(localHour==ipHour && (localMinutes >= ipMinutes-2 && localMinutes <= ipMinutes+5)){
-
+    if(systemMinutes == '59' && ipMinutes == '00' && ipHour == systemHour+1){
       test4Element.classList.add("toast--green");
       document.getElementById("check4").innerHTML = 'Succeed';
     }
     else{
-      test4Element.classList.add("toast--red");
-      document.getElementById("check4").innerHTML = 'Failed';
-      document.getElementById("percent4").innerHTML = ' - 30%';
-      result += 0.3;
+      if(systemHour==ipHour && (systemMinutes >= ipMinutes-2 && systemMinutes <= ipMinutes+5)){
+        test4Element.classList.add("toast--green");
+        document.getElementById("check4").innerHTML = 'Succeed';
+      }
+      else{
+        test4Element.classList.add("toast--red");
+        document.getElementById("check4").innerHTML = 'Failed';
+        document.getElementById("percent4").innerHTML = ' - 30%';
+        result += 0.3;
+      }
     }
   }
-  if(document.getElementById("check4").innerHTML == 'Checking Error'){
+
+  if(document.getElementById("check4").innerHTML == 'Checking Error' && document.getElementById("check1").innerHTML == 'Checking Error'){
     usingElement.classList.add("usingYellow");
     document.getElementById("using").innerHTML = 'Checking Error!';
   }
