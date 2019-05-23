@@ -67,7 +67,7 @@ function compareLocalTime(result) {
     document.getElementById("check4").innerHTML = 'Checking Error';
   }
   else{
-    if(systemMinutes == '59' && ipMinutes == '00' && ipHour == systemHour+1){
+    if(systemMinutes == '59' && ipMinutes == '00' && ipHour == Number(systemHour)+1){
       test4Element.classList.add("toast--green");
       document.getElementById("check4").innerHTML = 'Succeed';
     }
