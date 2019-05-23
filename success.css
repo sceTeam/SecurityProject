@@ -122,3 +122,5 @@ html, body{
 .toast--white:before{
   background-color:#F5F5F5;
 }
+
+.country__flag{max-width:29px;margin-bottom:-6px}

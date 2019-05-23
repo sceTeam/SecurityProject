@@ -10,7 +10,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
-var result, time;
+var result, accept_language, time, country_flag, time_zone;
 var test1,test2,test3;
 var check1,check2,check3;
 var percent1,percent2,percent3;
@@ -26,10 +26,11 @@ app.get('/', function(req, res) {
     //ipClient = '104.248.140.7'; //VPN
     //ipClient = '109.64.87.92'; //Real IP
     ipClient = req.header('x-forwarded-for');
+    accept_language = req.header('accept-language');
     console.log("Client Connected..");
     console.log(`Client IP: ${ipClient}`);
     console.log("------------------BlackBoxProxyBlock----------------------");
-    BlackBoxProxyBlock(ipClient,res,req);
+    BlackBoxProxyBlock(res);
 })
 
 let port = process.env.PORT;
@@ -42,7 +43,7 @@ app.listen(port);
 app.use(express.static(__dirname + '/'));
 console.log("Server is running..");
 
-function BlackBoxProxyBlock(ipClient,res,req)
+function BlackBoxProxyBlock(res)
 {
   request(`http://proxy.mind-media.com/block/proxycheck.php?ip=${ipClient}`,function(error,response,body){
     if(error || body == 'X'){
@@ -65,13 +66,13 @@ function BlackBoxProxyBlock(ipClient,res,req)
       }
     console.log('1. Result is:', result);
     console.log("------------------HostChecker--------------------");
-    HostChecker(ipClient,res,req);
+    HostChecker(res);
   }
 )};
 
 
 
-function HostChecker(ipClient,res,req)
+function HostChecker(res)
 {
    request(`https://www.ipqualityscore.com/api/json/ip/uglNEXB1BLgftt4M5FyKRFrpdRFk6t0W/${ipClient}`,function(error,response,body){
     var bodyData = JSON.parse(body);
@@ -94,24 +95,37 @@ function HostChecker(ipClient,res,req)
         console.log('HostChecker result is:', bodyData['host']);
       }
     console.log('2. Result is:', result);
-    console.log("------------------Country_Language--------------------");
-    Country_Language(ipClient,res,req);
-})};
+    getFlag(res);
+ })
+};
+
+function getFlag(res){
+  request(`https://api.ipgeolocation.io/ipgeo?apiKey=3f643672d11b4aff9c827233f1e5cb05&ip=${ipClient}` ,function(error,response,body){
+  try {  
+    country_flag = JSON.parse(body)['country_flag'];
+    time_zone = JSON.parse(body)['time_zone']['name'];
+  }catch (err) {console.log('Flag Function Error!');}
+  console.log("------------------Country_Language--------------------");
+  Country_Language(res);
+ });
+};
 
 
-
-function Country_Language(ipClient,res,req){
-  request(`https://api.ipgeolocation.io/timezone?apiKey=3f643672d11b4aff9c827233f1e5cb05&tz=` + CountryLanguage.getCountry(geoip.lookup(ipClient)['country']).name ,function(error,response,body){
-  time = JSON.parse(body)['time_24'];
-  var answer = 0;
-
+function Country_Language(res){
   try {
     var country = geoip.lookup(ipClient)['country'];
     var fullCountry = CountryLanguage.getCountry(country).name;
-    var accept_language = req.header('accept-language');
     console.log('Country:',country);
     console.log('Accept_Language:', accept_language);
-  } catch (err) {console.log(err);}
+  } catch (err) {'Country_Language Function Error!'; test3 = 'yellow'; check3 = 'Checking Error';}
+  request(`https://api.ipgeolocation.io/timezone?apiKey=3f643672d11b4aff9c827233f1e5cb05&tz=` + fullCountry ,function(error,response,body){
+  if(error || fullCountry == undefined){
+    time = undefined;
+  }
+  else{
+    time = JSON.parse(body)['time_24'];
+  }  
+  var answer = 0;
 
   CountryLanguage.getCountryLanguages(country, function (err, languages) {
     if (err) {
@@ -126,8 +140,8 @@ function Country_Language(ipClient,res,req){
     })
   console.log('Country_Language result is:', answer);
 
-  if(error || !country || !accept_language){
-    console.log('Country_Language error: Country: ' + country + 'Accept_Language: ' + accept_language);
+  if(!country || !accept_language){
+    console.log('Country_Language error: Country: ' + country + '  Accept_Language: ' + accept_language);
     test3 = 'yellow';
     check3 = 'Checking Error';
   }
@@ -145,6 +159,6 @@ function Country_Language(ipClient,res,req){
   }
   console.log('3. Result is:', result);
 
-  res.render('index',{result:result,time:time,country:fullCountry,ipClient:ipClient,test1:test1,test2:test2,test3:test3,check1:check1,check2:check2,check3:check3,percent1,percent2,percent3});
-  });
+  res.render('index',{result:result,time:time,country:fullCountry,country_flag:country_flag,time_zone:time_zone,ipClient:ipClient,test1:test1,test2:test2,test3:test3,check1:check1,check2:check2,check3:check3,percent1,percent2,percent3});
+});
 };
