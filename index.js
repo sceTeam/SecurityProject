@@ -11,6 +11,16 @@ var text = document.querySelector('.percent-text');
 text.style.color = color;
 
 function updateGraph(perc) {
+
+if(document.getElementById("check4").innerHTML == 'Checking Error'){
+  text.style.color = '#e6c300';
+}
+
+if(perc >= 0.6){
+  color = '#e60000';
+  text.style.color = color;
+}
+
   // Reset attributes
   circle.attr({
 	fill: 'none',
@@ -18,7 +28,6 @@ function updateGraph(perc) {
 	strokeWidth: '0.7cm',
 	strokeDasharray: '0 ' + perimeter,
 	strokeDashoffset: perimeter * .25 });
-
 
   // Animate
   Snap.animate(0, perc, val => {
@@ -48,30 +57,40 @@ function compareLocalTime(result) {
   ipHour = ipTimeSplit[0];
   ipMinutes = ipTimeSplit[1];
 
-  var element = document.getElementById("test4");
+  var test4Element = document.getElementById("test4");
 
-  if(!ipTime || !systemTime){
-    element.classList.add("toast--yellow");
+  var usingElement = document.getElementById("using");
+
+  if(!ipTime || !systemTime || !localHour || !localMinutes || !ipHour || !ipMinutes){
+    test4Element.classList.add("toast--yellow");
     document.getElementById("check4").innerHTML = 'Checking Error';
   }
   else{
     if(localHour==ipHour && (localMinutes >= ipMinutes-2 && localMinutes <= ipMinutes+5)){
 
-      element.classList.add("toast--green");
+      test4Element.classList.add("toast--green");
       document.getElementById("check4").innerHTML = 'Succeed';
     }
     else{
-      element.classList.add("toast--red");
+      test4Element.classList.add("toast--red");
       document.getElementById("check4").innerHTML = 'Failed';
       document.getElementById("percent4").innerHTML = ' - 30%';
       result += 0.3;
     }
   }
-  if(result >= 0.75){
-    document.getElementById("using").innerHTML = 'Your Using VPN!';
+  if(document.getElementById("check4").innerHTML == 'Checking Error'){
+    usingElement.classList.add("usingYellow");
+    document.getElementById("using").innerHTML = 'Checking Error!';
   }
   else{
-    document.getElementById("using").innerHTML = 'Your Not Using VPN.';
+    if(result >= 0.6){
+      usingElement.classList.add("usingRed");
+      document.getElementById("using").innerHTML = 'Your Using VPN!';
+    }
+    else{
+      usingElement.classList.add("usingBlue");
+      document.getElementById("using").innerHTML = 'Your Not Using VPN.';
+    }
   }
 
   updateGraph(result);

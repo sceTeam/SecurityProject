@@ -70,6 +70,11 @@ html, body{
   margin-bottom: 8px;
 }
 
+.toast__type2 {
+  padding: 10px;
+  top: -15px;
+}
+
 .toast__message {
     font-size: 14px;
     margin-top: 0;
@@ -124,3 +129,9 @@ html, body{
 }
 
 .country__flag{max-width:29px;margin-bottom:-6px}
+
+.usingRed{color: #ff0000;font-weight: 620;}
+
+.usingBlue{color: #0071b3;font-weight: 620;}
+
+.usingYellow{color: #e6c300;font-weight: 620;}

@@ -1,11 +1,8 @@
 body {
-  background: #282828;/* match border color */
+  background: #282828;
   text-align: center;
 }
 
-section {
-    min-height: 200vh; /* minus the height of the footer */
-}
 .graph-container {
   position: relative;
 }
@@ -19,9 +16,8 @@ section {
 }
 
 .logo {
-  font: 110px 'Arial', Sans-serif;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+  font: 110px 'Arial', Sans-serif;
   color: #282828;
-
   letter-spacing: 0px;
 }
 
@@ -31,11 +27,9 @@ section {
   margin-right: -15px;
   display: inline-block;/* required for transform */
   z-index: 10;/* stack 1st word on top */
-
 }
 
 /* stuff for 2nd word */
 .logo .word2 {
   z-index: 0;/* stack 2nd word below */
-
 }
