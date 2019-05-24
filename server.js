@@ -25,8 +25,9 @@ app.get('/', function(req, res) {
     console.log("------------------------------------------------------");
     //ipClient = '217.182.175.75'; //Proxy
     //ipClient = '104.248.140.7'; //VPN
-    //ipClient = '109.64.87.92'; //Real IP
-    ipClient = req.header('x-forwarded-for');
+    //ipClient = '167.114.118.4';
+    ipClient = '109.64.87.92'; //Real IP
+    //ipClient = req.header('x-forwarded-for');
     accept_language = req.header('accept-language');
     country = geoip.lookup(ipClient)['country'];
     fullCountry = CountryLanguage.getCountry(country).name;
@@ -93,9 +94,9 @@ function HostChecker(res)
       }
       ans = 0;
       ipNumbers = ipClient.split('.');
-      console.log(ipNumbers);
+      replace = ipNumbers[0]+'-'+ipNumbers[1]+'-'+ipNumbers[2]+'-'+ipNumbers[3];
       ipNumbers.forEach(function (num) {ans += bodyData['host'].includes(num)})
-      if(bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A') || ans < 4){
+      if(bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A') || !bodyData['host'].includes(replace) || ans < 4){
           test2 = 'red';
           check2 = 'Failed';
           result += 0.15;
@@ -137,7 +138,11 @@ function Country_Language(res){
       console.log('Languages: ',languages);
       languages.forEach(function (languageCodes) {
         console.log('#.', languageCodes.iso639_1);
-        answer += accept_language.includes(languageCodes.iso639_1);
+        if(languageCodes.iso639_1 == 'en'){
+        }
+        else{
+          answer += accept_language.includes(languageCodes.iso639_1);
+        }
         })
       }
     })
@@ -149,16 +154,16 @@ function Country_Language(res){
     check3 = 'Checking Error';
   }
   else{
-    if(answer == 0){
-      test3 = 'red';
-      check3 = 'Failed';
-      result += 0.25;
-      percent3 = ' - 25%'
+    if(country == 'US'){
+      test3 = 'yellow';
+      check3 = 'Cannot check in US';
     }
     else{
-      if(country == 'US'){
-        test3 = 'yellow';
-        check3 = 'Cannot check in US';
+      if(answer == 0){
+        test3 = 'red';
+        check3 = 'Failed';
+        result += 0.25;
+        percent3 = ' - 25%'
       }
       else{
         test3 = 'green';
