@@ -128,7 +128,7 @@ html, body{
   background-color:#F5F5F5;
 }
 
-.country__flag{max-width:29px;margin-bottom:-6px}
+.country__flag{margin-bottom:-4px}
 
 .usingRed{color: #ff0000;font-weight: 620;}
 

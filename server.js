@@ -10,7 +10,8 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
-var result, accept_language, time, country_flag, time_zone;
+var result, accept_language, time, flag, time_zone;
+var country, fullCountry, answer, ans;
 var test1,test2,test3;
 var check1,check2,check3;
 var percent1,percent2,percent3;
@@ -33,7 +34,7 @@ app.get('/', function(req, res) {
     BlackBoxProxyBlock(res);
 })
 
-let port = process.env.PORT;
+let port = process.env.PORT;;
 if (port == null || port == "") {
     port = 8000;
   }
@@ -82,7 +83,12 @@ function HostChecker(res)
       check2 = 'Checking Error';
     }
     else{
-      if(bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A')){
+      ans = 0;
+      time_zone = JSON.parse(body)['timezone'];
+      ipNumbers = ipClient.split('.');
+      console.log(ipNumbers);
+      ipNumbers.forEach(function (num) {ans += bodyData['host'].includes(num)})
+      if(bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A') || ans < 4){
           test2 = 'red';
           check2 = 'Failed';
           result += 0.15;
@@ -92,29 +98,19 @@ function HostChecker(res)
           test2 = 'green';
           check2 = 'Succeed';
         }
-        console.log('HostChecker result is:', bodyData['host'] + ' Region: ' + bodyData['region'] + ' City: ' + bodyData['city']);
+        console.log('HostChecker result is:', bodyData['host'] + ' || Region: ' + bodyData['region'] + ' || City: ' + bodyData['city']);
       }
     console.log('2. Result is:', result);
-    getFlag(res);
+    console.log("------------------Country_Language--------------------");
+    Country_Language(res);
  })
-};
-
-function getFlag(res){
-  request(`https://api.ipgeolocation.io/ipgeo?apiKey=3f643672d11b4aff9c827233f1e5cb05&ip=${ipClient}` ,function(error,response,body){
-  try {  
-    country_flag = JSON.parse(body)['country_flag'];
-    time_zone = JSON.parse(body)['time_zone']['name'];
-  }catch (err) {console.log('Flag Function Error!');}
-  console.log("------------------Country_Language--------------------");
-  Country_Language(res);
- });
 };
 
 
 function Country_Language(res){
   try {
-    var country = geoip.lookup(ipClient)['country'];
-    var fullCountry = CountryLanguage.getCountry(country).name;
+    country = geoip.lookup(ipClient)['country'];
+    fullCountry = CountryLanguage.getCountry(country).name;
     console.log('iP_Country:',country);
     console.log('Accepted_Language:', accept_language);
   } catch (err) {'Country_Language Function Error!'; test3 = 'yellow'; check3 = 'Checking Error';}
@@ -125,41 +121,49 @@ function Country_Language(res){
   else{
     time = JSON.parse(body)['time_24'];
   }  
-  var answer = 0;
+  
+  answer = 0;
 
   CountryLanguage.getCountryLanguages(country, function (err, languages) {
     if (err) {
       console.log(err);
     }
     else {
-      console.log('Country_Languages: ',CountryLanguage.getCountryLanguages(country));
+      console.log('Languages: ',languages);
       languages.forEach(function (languageCodes) {
         console.log('#.', languageCodes.iso639_1);
         answer += accept_language.includes(languageCodes.iso639_1);
         })
       }
     })
-  console.log('Country_Language result is:', answer);
+  console.log('Country_Language result:', answer);
 
   if(!country || !accept_language){
-    console.log('Country_Language error: Country: ' + country + '  Acceptקג_Language: ' + accept_language);
+    console.log('Country_Language error: Country: ' + country + '  Accepted_Language: ' + accept_language);
     test3 = 'yellow';
     check3 = 'Checking Error';
   }
   else{
-    if(answer < 1){
+    if(answer == 0){
       test3 = 'red';
       check3 = 'Failed';
       result += 0.25;
       percent3 = ' - 25%'
     }
     else{
-      test3 = 'green';
-      check3 = 'Succeed';
+      if(country == 'US'){
+        test3 = 'yellow';
+        check3 = 'Cannot check in US';
+      }
+      else{
+        test3 = 'green';
+        check3 = 'Succeed';
     }
   }
+}
   console.log('3. Result is:', result);
   console.log("------------------------------------------------------");
-  res.render('index',{result:result,time:time,country:fullCountry,country_flag:country_flag,time_zone:time_zone,ipClient:ipClient,test1:test1,test2:test2,test3:test3,check1:check1,check2:check2,check3:check3,percent1,percent2,percent3});
+  flag = 'https://www.countryflags.io/' + country + '/shiny/24.png'
+  res.render('index',{result:result,time:time,country:fullCountry,flag:flag,time_zone:time_zone,ipClient:ipClient,test1:test1,test2:test2,test3:test3,check1:check1,check2:check2,check3:check3,percent1,percent2,percent3});
 });
 };
