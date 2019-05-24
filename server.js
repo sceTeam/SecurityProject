@@ -28,6 +28,8 @@ app.get('/', function(req, res) {
     //ipClient = '109.64.87.92'; //Real IP
     ipClient = req.header('x-forwarded-for');
     accept_language = req.header('accept-language');
+    country = geoip.lookup(ipClient)['country'];
+    fullCountry = CountryLanguage.getCountry(country).name;
     console.log("Client Connected..");
     console.log(`Client IP: ${ipClient}`);
     console.log("----------------BlackBoxProxyBlock--------------------");
@@ -83,8 +85,13 @@ function HostChecker(res)
       check2 = 'Checking Error';
     }
     else{
+      if(country == 'IL'){
+        time_zone = 'Asia/Jerusalem'
+      }
+      else{
+        time_zone = JSON.parse(body)['timezone'];
+      }
       ans = 0;
-      time_zone = JSON.parse(body)['timezone'];
       ipNumbers = ipClient.split('.');
       console.log(ipNumbers);
       ipNumbers.forEach(function (num) {ans += bodyData['host'].includes(num)})
@@ -109,8 +116,6 @@ function HostChecker(res)
 
 function Country_Language(res){
   try {
-    country = geoip.lookup(ipClient)['country'];
-    fullCountry = CountryLanguage.getCountry(country).name;
     console.log('iP_Country:',country);
     console.log('Accepted_Language:', accept_language);
   } catch (err) {'Country_Language Function Error!'; test3 = 'yellow'; check3 = 'Checking Error';}
