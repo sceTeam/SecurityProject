@@ -26,7 +26,8 @@ app.get('/', function(req, res) {
     //ipClient = '217.182.175.75'; //Proxy
     //ipClient = '104.248.140.7'; //VPN
     //ipClient = '109.64.87.92'; //Real IP
-    ipClient = req.header('x-forwarded-for');
+    ipClient = '46.19.85.128';
+    //ipClient = req.header('x-forwarded-for');
     accept_language = req.header('accept-language');
     country = geoip.lookup(ipClient)['country'];
     fullCountry = CountryLanguage.getCountry(country).name;
@@ -95,7 +96,7 @@ function HostChecker(res)
       ipNumbers = ipClient.split('.');
       replace = ipNumbers[0]+'-'+ipNumbers[1]+'-'+ipNumbers[2]+'-'+ipNumbers[3];
       ipNumbers.forEach(function (num) {ans += bodyData['host'].includes(num)})
-      if(bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A') || !bodyData['host'].includes(replace) || ans < 4){
+      if(bodyData['mobile'] == ipClient || bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A') || !bodyData['host'].includes(replace) || ans < 4){
           test2 = 'red';
           check2 = 'Failed';
           result += 0.15;
