@@ -96,7 +96,7 @@ function HostChecker(res)
       ipNumbers = ipClient.split('.');
       replace = ipNumbers[0]+'-'+ipNumbers[1]+'-'+ipNumbers[2]+'-'+ipNumbers[3];
       ipNumbers.forEach(function (num) {ans += bodyData['host'].includes(num)})
-      if(bodyData['mobile'] == ipClient || bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A') || !bodyData['host'].includes(replace) || ans < 4){
+      if(bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A') || !bodyData['host'].includes(replace) || ans < 4){
           test2 = 'red';
           check2 = 'Failed';
           result += 0.15;
@@ -106,7 +106,7 @@ function HostChecker(res)
           test2 = 'green';
           check2 = 'Succeed';
         }
-        console.log('HostChecker result is:', bodyData['host'] + ' || Region: ' + bodyData['region'] + ' || City: ' + bodyData['city']);
+        console.log('HostChecker result is:', bodyData['mobile'] == ipClient, bodyData['host'] + ' || Region: ' + bodyData['region'] + ' || City: ' + bodyData['city']);
       }
     console.log('2. Result is:', result);
     console.log("------------------Country_Language--------------------");
