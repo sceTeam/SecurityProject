@@ -25,8 +25,7 @@ app.get('/', function(req, res) {
     console.log("------------------------------------------------------");
     //ipClient = '217.182.175.75'; //Proxy
     //ipClient = '104.248.140.7'; //VPN
-    //ipClient = '109.64.87.92'; //Real IP
-    ipClient = '46.19.85.128';
+    ipClient = '109.64.87.92'; //Real IP
     //ipClient = req.header('x-forwarded-for');
     accept_language = req.header('accept-language');
     country = geoip.lookup(ipClient)['country'];
@@ -86,12 +85,7 @@ function HostChecker(res)
       check2 = 'Checking Error';
     }
     else{
-      if(country == 'IL'){
-        time_zone = 'Asia/Jerusalem'
-      }
-      else{
-        time_zone = JSON.parse(body)['timezone'];
-      }
+      time_zone = JSON.parse(body)['timezone'];
       ans = 0;
       ipNumbers = ipClient.split('.');
       replace = ipNumbers[0]+'-'+ipNumbers[1]+'-'+ipNumbers[2]+'-'+ipNumbers[3];
@@ -99,14 +93,14 @@ function HostChecker(res)
       if(bodyData['host'] == ipClient || (bodyData['region'] == 'N\/A' && bodyData['city'] == 'N\/A') || !bodyData['host'].includes(replace) || ans < 4){
           test2 = 'red';
           check2 = 'Failed';
-          result += 0.15;
-          percent2 = ' - 15%'
+          result += 0.1;
+          percent2 = ' - 10%'
         }
         else{
           test2 = 'green';
           check2 = 'Succeed';
         }
-        console.log('HostChecker result is:', bodyData['mobile'] == ipClient, bodyData['host'] + ' || Region: ' + bodyData['region'] + ' || City: ' + bodyData['city']);
+        console.log('HostChecker result is:', bodyData['host'] + ' || Region: ' + bodyData['region'] + ' || City: ' + bodyData['city']);
       }
     console.log('2. Result is:', result);
     console.log("------------------Country_Language--------------------");
@@ -162,8 +156,8 @@ function Country_Language(res){
       if(answer == 0){
         test3 = 'red';
         check3 = 'Failed';
-        result += 0.25;
-        percent3 = ' - 25%'
+        result += 0.2;
+        percent3 = ' - 20%'
       }
       else{
         test3 = 'green';

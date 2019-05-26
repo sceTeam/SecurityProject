@@ -12,7 +12,7 @@ text.style.color = color;
 
 function updateGraph(perc) {
 
-if(document.getElementById("check4").innerHTML == 'Checking Error' && document.getElementById("check1").innerHTML == 'Checking Error'){
+  if(document.getElementById("check4").innerHTML == 'Checking Error' && document.getElementById("check5").innerHTML == 'Checking Error'){
   color = '#e6c300';
   text.style.color = '#e6c300';
 }
@@ -60,7 +60,6 @@ function compareLocalTime(result) {
 
   var test4Element = document.getElementById("test4");
 
-  var usingElement = document.getElementById("using");
 
   if(!ipTime || !systemTime || !systemHour || !systemMinutes || !ipHour || !ipMinutes){
     test4Element.classList.add("toast--yellow");
@@ -79,13 +78,39 @@ function compareLocalTime(result) {
       else{
         test4Element.classList.add("toast--red");
         document.getElementById("check4").innerHTML = 'Failed';
-        document.getElementById("percent4").innerHTML = ' - 30%';
-        result += 0.3;
+        document.getElementById("percent4").innerHTML = ' - 20%';
+        result += 0.2;
       }
     }
   }
+  timeZone(result)
+};
 
-  if(document.getElementById("check4").innerHTML == 'Checking Error' && document.getElementById("check1").innerHTML == 'Checking Error'){
+function timeZone(result){
+  document.getElementById("percent5").innerHTML = '';
+  var test5Element = document.getElementById("test5");
+  var usingElement = document.getElementById("using");
+  var systemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  var ipTimeZone = document.getElementById("TimeZone").innerHTML;
+
+  if(!systemTimeZone || !ipTimeZone){
+    test5Element.classList.add("toast--yellow");
+    document.getElementById("check5").innerHTML = 'Checking Error';
+  }
+  else{
+    if(systemTimeZone == ipTimeZone){
+      test5Element.classList.add("toast--green");
+      document.getElementById("check5").innerHTML = 'Succeed';
+    }
+    else{
+      test5Element.classList.add("toast--red");
+      document.getElementById("check5").innerHTML = 'Failed';
+      document.getElementById("percent5").innerHTML = ' - 20%';
+      result += 0.2;
+    }
+  }
+
+  if(document.getElementById("check4").innerHTML == 'Checking Error' && document.getElementById("check5").innerHTML == 'Checking Error'){
     usingElement.classList.add("usingYellow");
     document.getElementById("using").innerHTML = 'Checking Error!';
   }
@@ -99,9 +124,8 @@ function compareLocalTime(result) {
       document.getElementById("using").innerHTML = 'Your Not Using VPN.';
     }
   }
-
   updateGraph(result);
-};
+}
 
 jQuery(document).ready(function(){
   jQuery('.toast__close').click(function(e){
