@@ -25,8 +25,8 @@ app.get('/', function(req, res) {
     console.log("------------------------------------------------------");
     //ipClient = '217.182.175.75'; //Proxy
     //ipClient = '104.248.140.7'; //VPN
-    ipClient = '109.64.87.92'; //Real IP
-    //ipClient = req.header('x-forwarded-for');
+    //ipClient = '109.64.87.92'; //Real IP
+    ipClient = req.header('x-forwarded-for');
     accept_language = req.header('accept-language');
     country = geoip.lookup(ipClient)['country'];
     fullCountry = CountryLanguage.getCountry(country).name;
