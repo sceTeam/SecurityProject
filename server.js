@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
 var result, accept_language, time, flag, time_zone;
-var country, fullCountry, answer, ans, mobile, hostname;
+var country, fullCountry, answer, ans, mobile, navigator;
 var test1,test2,test3;
 var check1,check2,check3;
 var percent1,percent2,percent3;
@@ -28,7 +28,7 @@ app.get('/', function(req, res) {
     ipClient = '109.64.87.92'; //Real IP
     //ipClient = req.header('x-forwarded-for');
     accept_language = req.header('accept-language');
-    hostname = req.header('host');
+    navigator = req.header('user-agent');
     country = geoip.lookup(ipClient)['country'];
     fullCountry = CountryLanguage.getCountry(country).name;
     console.log("Client Connected..");
@@ -86,11 +86,14 @@ function HostChecker(res)
       check2 = 'Checking Error';
     }
     else{
-      /*if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
-        console.log('asdasdasdasdasdasdasdasd')
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+        console.log('asdasdasdasdasdasdasdasd');
         //mobile = true;
-      }*/
-      console.log("Host is:", hostname);
+      }
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator)) {
+        console.log('asdasdasdasdasdasdasdasd');
+        //mobile = true;
+      }
       ans = 0;
       ipNumbers = ipClient.split('.');
       replace = ipNumbers[0]+'-'+ipNumbers[1]+'-'+ipNumbers[2]+'-'+ipNumbers[3];
