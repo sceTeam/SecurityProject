@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
 var result, accept_language, time, flag, time_zone;
-var country, fullCountry, answer, ans;
+var country, fullCountry, answer, ans, mobile, hostname;
 var test1,test2,test3;
 var check1,check2,check3;
 var percent1,percent2,percent3;
@@ -22,12 +22,13 @@ app.get('/', function(req, res) {
     percent3 = null;
     result = 0;
     //console.log(JSON.stringify(req.headers));
-    console.log("------------------------------------------------------");
+    console.log("\n------------------------------------------------------");
     //ipClient = '217.182.175.75'; //Proxy
     //ipClient = '104.248.140.7'; //VPN
-    //ipClient = '109.64.87.92'; //Real IP
-    ipClient = req.header('x-forwarded-for');
+    ipClient = '109.64.87.92'; //Real IP
+    //ipClient = req.header('x-forwarded-for');
     accept_language = req.header('accept-language');
+    hostname = req.header('host');
     country = geoip.lookup(ipClient)['country'];
     fullCountry = CountryLanguage.getCountry(country).name;
     console.log("Client Connected..");
@@ -85,7 +86,11 @@ function HostChecker(res)
       check2 = 'Checking Error';
     }
     else{
-      time_zone = JSON.parse(body)['timezone'];
+      /*if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+        console.log('asdasdasdasdasdasdasdasd')
+        //mobile = true;
+      }*/
+      console.log("Host is:", hostname);
       ans = 0;
       ipNumbers = ipClient.split('.');
       replace = ipNumbers[0]+'-'+ipNumbers[1]+'-'+ipNumbers[2]+'-'+ipNumbers[3];
@@ -103,11 +108,24 @@ function HostChecker(res)
         console.log('HostChecker result is:', bodyData['host'] + ' || Region: ' + bodyData['region'] + ' || City: ' + bodyData['city']);
       }
     console.log('2. Result is:', result);
-    console.log("------------------Country_Language--------------------");
-    Country_Language(res);
+    console.log("---------------------Time_Zone------------------------");
+    Time_Zone(res);
  })
 };
 
+function Time_Zone(res){
+  request(`https://api.ipgeolocation.io/timezone?apiKey=3f643672d11b4aff9c827233f1e5cb05&ip=${ipClient}`,function(error,response,body){
+  if(error || body.includes('not valid')){
+    time_zone = undefined;
+  }
+  else{
+    time_zone = JSON.parse(body)['timezone'];
+    console.log('Time_Zone result:', time_zone);
+  }  
+  console.log("------------------Country_Language--------------------");
+  Country_Language(res);
+  })
+};
 
 function Country_Language(res){
   try {
@@ -166,7 +184,7 @@ function Country_Language(res){
   }
 }
   console.log('3. Result is:', result);
-  console.log("------------------------------------------------------");
+  console.log("--------------------Request End-----------------------");
   flag = 'https://www.countryflags.io/' + country + '/shiny/24.png'
   res.render('index',{result:result,time:time,country:fullCountry,flag:flag,time_zone:time_zone,ipClient:ipClient,test1:test1,test2:test2,test3:test3,check1:check1,check2:check2,check3:check3,percent1,percent2,percent3});
 });
